@@ -28,6 +28,7 @@ export default defineContentScript({
           break;
         }
       }
+      log.debug(`Document change detected: ${localChange}`);
 
       if (localChange) {
         lastDocUpdateTs = Date.now();
@@ -65,5 +66,7 @@ function shouldSendHeartbeat(): boolean {
   if (result) {
     lastHeartbeatTs = Date.now();
   }
+  log.debug(`Should send heartbeat: ${result}`);
+
   return result;
 }

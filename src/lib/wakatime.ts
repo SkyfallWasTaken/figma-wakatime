@@ -1,6 +1,4 @@
 import { version } from "../../package.json";
-import { apiKey, apiUrl } from "./store";
-import { get } from "svelte/store";
 import { stripIndents } from "common-tags";
 import { log } from "@/lib/util";
 
@@ -54,18 +52,11 @@ type Heartbeat = PartialHeartbeat & {
   user_agent: string;
 } & ZeroedFields;
 
-async function trySendHeartbeat(partialHeartbeat: PartialHeartbeat) {
-  const apiKeyValue = get(apiKey);
-  if (!apiKeyValue) {
-    log.error("API Key is not set. Skipping sending heartbeat.");
-    return;
-  }
-  const apiUrlValue = get(apiUrl);
-  if (!apiUrlValue) {
-    log.error("API URL is not set. Skipping sending heartbeat.");
-    return;
-  }
-
+async function trySendHeartbeat(
+  partialHeartbeat: PartialHeartbeat,
+  apiKey: string,
+  apiUrl: string
+) {
   const heartbeat: Heartbeat = {
     ...partialHeartbeat,
     is_write: true,
@@ -81,11 +72,11 @@ async function trySendHeartbeat(partialHeartbeat: PartialHeartbeat) {
     cursorpos: 0,
   };
 
-  const url = `${apiUrlValue}/heartbeats`;
+  const url = `${apiUrl}/heartbeats`;
   const response = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${apiKeyValue}`,
+      Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(heartbeat),
@@ -97,7 +88,7 @@ async function trySendHeartbeat(partialHeartbeat: PartialHeartbeat) {
 
         Response status: ${response.status}
         API URL: ${url}
-        API Key Length: ${apiKeyValue.length}
+        API Key Length: ${apiKey.length}
         User Agent: ${USER_AGENT}
       `.trim()
     );
@@ -106,18 +97,21 @@ async function trySendHeartbeat(partialHeartbeat: PartialHeartbeat) {
 
 const queue: PartialHeartbeat[] = [];
 export async function emitHeartbeat(partialHeartbeat: PartialHeartbeat) {
+  log.debug(`Queuing heartbeat for \`${partialHeartbeat.entity}\``);
   queue.push(partialHeartbeat);
 }
+export function startFlushingHeartbeats(apiKey: string, apiUrl: string) {
+  setInterval(async () => {
+    if (queue.length === 0) return;
+    log.debug(`${queue.length} heartbeats in queue.`);
 
-setInterval(async () => {
-  if (queue.length === 0) return;
-
-  try {
-    const partialHeartbeat = queue[0];
-    await trySendHeartbeat(partialHeartbeat);
-    log.debug("Flushed heartbeat.");
-    queue.shift();
-  } catch (error) {
-    log.warn("Failed to send heartbeat:", error);
-  }
-}, 10000);
+    try {
+      const partialHeartbeat = queue[0];
+      await trySendHeartbeat(partialHeartbeat, apiKey, apiUrl);
+      log.debug("Flushed heartbeat.");
+      queue.shift();
+    } catch (error) {
+      log.warn("Failed to send heartbeat:", error);
+    }
+  }, 10000);
+}
