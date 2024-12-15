@@ -24,4 +24,8 @@ function createStore<T>(value: T, storageKey: StorageItemKey) {
   };
 }
 
-export const count = createStore(0, "local:count");
+export const apiKey = createStore("", "local:apiKey");
+export const apiUrl = createStore(
+  "https://api.wakatime.com/api/v1",
+  "local:apiUrl"
+);
