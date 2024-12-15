@@ -1,6 +1,8 @@
 import { version } from "../../package.json";
 import { apiKey, apiUrl } from "./store";
 import { get } from "svelte/store";
+import { stripIndents } from "common-tags";
+import { log } from "@/lib/util";
 
 function getOS(): string {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -27,13 +29,13 @@ function getBrowser(): string {
 }
 
 const USER_AGENT = `wakatime/unset (${getOS()}-${getBrowser()}-none) figma-wakatime/${version}`;
-console.log(`Sending heartbeats with User-Agent: ${USER_AGENT}`);
+log.info(`Sending heartbeats with User-Agent: ${USER_AGENT}`);
 
 export interface PartialHeartbeat {
   entity: string;
   type: "file";
   category: "coding";
-  time: string;
+  time: number;
   project: string;
   language: string;
 }
@@ -52,15 +54,15 @@ type Heartbeat = PartialHeartbeat & {
   user_agent: string;
 } & ZeroedFields;
 
-export async function sendHeartbeat(partialHeartbeat: PartialHeartbeat) {
+async function trySendHeartbeat(partialHeartbeat: PartialHeartbeat) {
   const apiKeyValue = get(apiKey);
   if (!apiKeyValue) {
-    console.error("API Key is not set. Skipping sending heartbeat.");
+    log.error("API Key is not set. Skipping sending heartbeat.");
     return;
   }
   const apiUrlValue = get(apiUrl);
   if (!apiUrlValue) {
-    console.error("API URL is not set. Skipping sending heartbeat.");
+    log.error("API URL is not set. Skipping sending heartbeat.");
     return;
   }
 
@@ -90,14 +92,32 @@ export async function sendHeartbeat(partialHeartbeat: PartialHeartbeat) {
   });
   if (response.status != 201) {
     throw new Error(
-      `
+      stripIndents`
         Failed to send heartbeat to WakaTime API.
 
         Response status: ${response.status}
         API URL: ${url}
         API Key Length: ${apiKeyValue.length}
         User Agent: ${USER_AGENT}
-    `.trim()
+      `.trim()
     );
   }
 }
+
+const queue: PartialHeartbeat[] = [];
+export async function emitHeartbeat(partialHeartbeat: PartialHeartbeat) {
+  queue.push(partialHeartbeat);
+}
+
+setInterval(async () => {
+  if (queue.length === 0) return;
+
+  try {
+    const partialHeartbeat = queue[0];
+    await trySendHeartbeat(partialHeartbeat);
+    log.debug("Flushed heartbeat.");
+    queue.shift();
+  } catch (error) {
+    log.warn("Failed to send heartbeat:", error);
+  }
+}, 10000);
