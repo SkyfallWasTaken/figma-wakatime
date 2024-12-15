@@ -1,6 +1,6 @@
 {
   "name": "figma-wakatime",
-  "description": "A WakaTime plugin for Figma",
+  "description": "Metrics, insights, and time tracking automatically generated from your Figma activity.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
