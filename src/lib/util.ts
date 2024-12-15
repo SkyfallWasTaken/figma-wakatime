@@ -1,7 +1,9 @@
 const PREFIX = "[Figma for WakaTime]";
+const STYLE = "color: #007acc; font-weight: bold;";
+
 export const log = {
-  debug: (...args: any[]) => console.debug(PREFIX, ...args),
-  info: (...args: any[]) => console.log(PREFIX, ...args),
-  warn: (...args: any[]) => console.warn(PREFIX, ...args),
-  error: (...args: any[]) => console.error(PREFIX, ...args),
+  debug: (...args: any[]) => console.debug(`%c${PREFIX}`, STYLE, ...args),
+  info: (...args: any[]) => console.log(`%c${PREFIX}`, STYLE, ...args),
+  warn: (...args: any[]) => console.warn(`%c${PREFIX}`, STYLE, ...args),
+  error: (...args: any[]) => console.error(`%c${PREFIX}`, STYLE, ...args),
 };
