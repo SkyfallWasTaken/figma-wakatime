@@ -1,6 +1,8 @@
 import pWaitFor from "p-wait-for";
 import { emitHeartbeat } from "@/lib/wakatime";
 import { log } from "@/lib/util";
+import { setIntervalAsync } from "set-interval-async";
+import hashObj from "object-hash";
 
 // People often ponder their designs or use sites like Dribbble for inspiration.
 // This can lead to long periods of inactivity and leave the user annoyed when
@@ -10,6 +12,7 @@ const MAX_INACTIVITY_SECS = 60 * 10;
 const HEARTBEAT_INTERVAL_SECS = 60;
 let lastHeartbeatTs: number | null = null;
 let lastDocUpdateTs: number | null = null;
+let lastDocHash: string | null = null;
 
 export default defineContentScript({
   matches: ["*://*.figma.com/design/*"],
@@ -20,23 +23,25 @@ export default defineContentScript({
     log.debug("Figma object loaded");
 
     const figma = window.figma as PluginAPI;
-    figma.on("documentchange", (changes) => {
-      let localChange = false;
-      for (const change of changes.documentChanges) {
-        if (change.origin === "LOCAL") {
-          localChange = true;
-          break;
-        }
+    await figma.loadAllPagesAsync();
+    setIntervalAsync(async () => {
+      log.debug("HELO");
+      const root = await figma.getNodeByIdAsync(figma.root.id);
+      if (!root) {
+        log.error("Could not find root node. This should never happen.");
+        return;
       }
-      log.debug(`Document change detected: ${localChange}`);
 
-      if (localChange) {
+      const currentDocHash = Math.random().toString();
+      if (currentDocHash != lastDocHash) {
+        log.debug("Document has changed");
+        lastDocHash = currentDocHash;
         lastDocUpdateTs = Date.now();
       }
 
-      if (localChange && shouldSendHeartbeat()) {
+      if (shouldSendHeartbeat()) {
         log.debug("Sending heartbeat...");
-        emitHeartbeat({
+        await emitHeartbeat({
           project: figma.root.name,
           entity: getEntityName(figma),
           time: Math.floor(Date.now() / 1000),
@@ -45,7 +50,8 @@ export default defineContentScript({
           category: "coding",
         });
       }
-    });
+    }, 12000);
+
     log.info(`Listening for changes to document \`${figma.root.name}\``);
   },
 });
@@ -62,11 +68,15 @@ function shouldSendHeartbeat(): boolean {
   const heartbeatStale =
     lastHeartbeatTs === null ||
     Date.now() - lastHeartbeatTs > HEARTBEAT_INTERVAL_SECS * 1000;
-  const result = document.hasFocus() && heartbeatStale;
+  const active = Date.now() - lastDocUpdateTs! < MAX_INACTIVITY_SECS * 1000;
+  const result =
+    document.hasFocus() && heartbeatStale && lastDocUpdateTs !== null && active;
   if (result) {
     lastHeartbeatTs = Date.now();
   }
-  log.debug(`Should send heartbeat: ${result}`);
+  log.debug(
+    `Should send heartbeat: ${result} (heartbeatStale: ${heartbeatStale}, active: ${active})`
+  );
 
   return result;
 }

@@ -1,6 +1,7 @@
 import { version } from "../../package.json";
 import { stripIndents } from "common-tags";
 import { log } from "@/lib/util";
+import { setIntervalAsync } from "set-interval-async";
 
 function getOS(): string {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -52,66 +53,72 @@ type Heartbeat = PartialHeartbeat & {
   user_agent: string;
 } & ZeroedFields;
 
-async function trySendHeartbeat(
-  partialHeartbeat: PartialHeartbeat,
-  apiKey: string,
-  apiUrl: string
-) {
-  const heartbeat: Heartbeat = {
-    ...partialHeartbeat,
-    is_write: true,
-    editor: "Figma",
-    machine: `${getBrowser()} on ${getOS()}`,
-    operating_system: getOS(),
-    user_agent: USER_AGENT,
+class WakaTime {
+  private queue: PartialHeartbeat[] = [];
+  private apiKey: string;
+  private apiUrl: string;
 
-    lines: 0,
-    line_additions: 0,
-    line_deletions: 0,
-    lineno: 0,
-    cursorpos: 0,
-  };
-
-  const url = `${apiUrl}/heartbeats`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(heartbeat),
-  });
-  if (response.status != 201) {
-    throw new Error(
-      stripIndents`
-        Failed to send heartbeat to WakaTime API.
-
-        Response status: ${response.status}
-        API URL: ${url}
-        API Key Length: ${apiKey.length}
-        User Agent: ${USER_AGENT}
-      `.trim()
-    );
+  constructor(apiKey: string, apiUrl: string) {
+    this.apiKey = apiKey;
+    this.apiUrl = apiUrl;
   }
-}
 
-const queue: PartialHeartbeat[] = [];
-export async function emitHeartbeat(partialHeartbeat: PartialHeartbeat) {
-  log.debug(`Queuing heartbeat for \`${partialHeartbeat.entity}\``);
-  queue.push(partialHeartbeat);
-}
-export function startFlushingHeartbeats(apiKey: string, apiUrl: string) {
-  setInterval(async () => {
-    if (queue.length === 0) return;
-    log.debug(`${queue.length} heartbeats in queue.`);
+  async trySendHeartbeat(partialHeartbeat: PartialHeartbeat) {
+    const heartbeat: Heartbeat = {
+      ...partialHeartbeat,
+      is_write: true,
+      editor: "Figma",
+      machine: `${getBrowser()} on ${getOS()}`,
+      operating_system: getOS(),
+      user_agent: USER_AGENT,
 
-    try {
-      const partialHeartbeat = queue[0];
-      await trySendHeartbeat(partialHeartbeat, apiKey, apiUrl);
-      log.debug("Flushed heartbeat.");
-      queue.shift();
-    } catch (error) {
-      log.warn("Failed to send heartbeat:", error);
+      lines: 0,
+      line_additions: 0,
+      line_deletions: 0,
+      lineno: 0,
+      cursorpos: 0,
+    };
+
+    const url = `${this.apiUrl}/heartbeats`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(heartbeat),
+    });
+    if (response.status != 201) {
+      throw new Error(
+        stripIndents`
+          Failed to send heartbeat to WakaTime API.
+  
+          Response status: ${response.status}
+          API URL: ${url}
+          API Key Length: ${this.apiKey.length}
+          User Agent: ${USER_AGENT}
+        `.trim()
+      );
     }
-  }, 10000);
+  }
+
+  async emitHeartbeat(partialHeartbeat: PartialHeartbeat) {
+    log.debug(`Queuing heartbeat for \`${partialHeartbeat.entity}\``);
+    this.queue.push(partialHeartbeat);
+  }
+  startFlushingHeartbeats() {
+    setIntervalAsync(async () => {
+      if (this.queue.length === 0) return;
+      log.debug(`${this.queue.length} heartbeats in queue.`);
+
+      try {
+        const partialHeartbeat = this.queue[0];
+        await this.trySendHeartbeat(partialHeartbeat);
+        log.debug("Flushed heartbeat.");
+        this.queue.shift();
+      } catch (error) {
+        log.warn("Failed to send heartbeat:", error);
+      }
+    }, 10000);
+  }
 }

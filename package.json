@@ -33,8 +33,13 @@
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
     "@types/common-tags": "^1.8.4",
+    "@types/object-hash": "^3.0.6",
+    "@webext-core/proxy-service": "^1.2.1",
     "common-tags": "^1.8.2",
+    "dequal": "^2.0.3",
     "lucide-svelte": "^0.468.0",
-    "p-wait-for": "^5.0.2"
+    "object-hash": "^3.0.0",
+    "p-wait-for": "^5.0.2",
+    "set-interval-async": "^3.0.3"
   }
 }
