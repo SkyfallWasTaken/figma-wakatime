@@ -1,8 +1,8 @@
 import pWaitFor from "p-wait-for";
-import { emitHeartbeat } from "@/lib/wakatime";
 import { log } from "@/lib/util";
 import { setIntervalAsync } from "set-interval-async";
 import hashObj from "object-hash";
+import { getWakaService } from "@/lib/waka-service";
 
 // People often ponder their designs or use sites like Dribbble for inspiration.
 // This can lead to long periods of inactivity and leave the user annoyed when
@@ -23,6 +23,7 @@ export default defineContentScript({
     log.debug("Figma object loaded");
 
     const figma = window.figma as PluginAPI;
+    const wakatime = getWakaService();
     await figma.loadAllPagesAsync();
     setIntervalAsync(async () => {
       log.debug("HELO");
@@ -41,7 +42,7 @@ export default defineContentScript({
 
       if (shouldSendHeartbeat()) {
         log.debug("Sending heartbeat...");
-        await emitHeartbeat({
+        await wakatime.emitHeartbeat({
           project: figma.root.name,
           entity: getEntityName(figma),
           time: Math.floor(Date.now() / 1000),

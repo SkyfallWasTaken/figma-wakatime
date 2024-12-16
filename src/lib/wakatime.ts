@@ -53,7 +53,7 @@ type Heartbeat = PartialHeartbeat & {
   user_agent: string;
 } & ZeroedFields;
 
-class WakaTime {
+export default class WakaTime {
   private queue: PartialHeartbeat[] = [];
   private apiKey: string;
   private apiUrl: string;
