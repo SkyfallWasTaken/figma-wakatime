@@ -1,10 +1,18 @@
 import { apiKey, apiUrl } from "@/lib/store";
 import { get } from "svelte/store";
-import { getWakaService, registerWakaService } from "@/lib/waka-service";
-import WakaTime from "../lib/wakatime";
+import WakaTime from "@/lib/wakatime";
+import { messenger } from "@/lib/messaging";
+import { log } from "@/lib/util";
 
 export default defineBackground(() => {
-  registerWakaService(new WakaTime(get(apiKey), get(apiUrl)));
-  const wakatime = getWakaService();
+  const wakatime = new WakaTime(get(apiKey), get(apiUrl));
+
   wakatime.startFlushingHeartbeats();
+  messenger.onMessage("emitHeartbeat", (partialHeartbeat) => {
+    log.debug("Received heartbeat request", partialHeartbeat);
+    wakatime.emitHeartbeat(partialHeartbeat.data);
+  });
 });
+
+/* export default defineBackground(() => {});
+ */

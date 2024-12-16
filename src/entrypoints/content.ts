@@ -1,9 +1,9 @@
 import pWaitFor from "p-wait-for";
 import { log } from "@/lib/util";
 import { setIntervalAsync } from "set-interval-async";
-import hashObj from "object-hash";
-import { getWakaService } from "@/lib/waka-service";
-
+import { messenger } from "@/lib/messaging";
+/* import { getWakaService } from "@/lib/waka-service";
+ */
 // People often ponder their designs or use sites like Dribbble for inspiration.
 // This can lead to long periods of inactivity and leave the user annoyed when
 // all their time hasn't been tracked. To prevent this, we'll allow them to be inactive
@@ -23,10 +23,9 @@ export default defineContentScript({
     log.debug("Figma object loaded");
 
     const figma = window.figma as PluginAPI;
-    const wakatime = getWakaService();
-    await figma.loadAllPagesAsync();
+    /*     const wakatime = getWakaService();
+     */ await figma.loadAllPagesAsync();
     setIntervalAsync(async () => {
-      log.debug("HELO");
       const root = await figma.getNodeByIdAsync(figma.root.id);
       if (!root) {
         log.error("Could not find root node. This should never happen.");
@@ -42,7 +41,7 @@ export default defineContentScript({
 
       if (shouldSendHeartbeat()) {
         log.debug("Sending heartbeat...");
-        await wakatime.emitHeartbeat({
+        await messenger.sendMessage("emitHeartbeat", {
           project: figma.root.name,
           entity: getEntityName(figma),
           time: Math.floor(Date.now() / 1000),

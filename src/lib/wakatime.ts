@@ -102,7 +102,7 @@ export default class WakaTime {
     }
   }
 
-  async emitHeartbeat(partialHeartbeat: PartialHeartbeat) {
+  emitHeartbeat(partialHeartbeat: PartialHeartbeat) {
     log.debug(`Queuing heartbeat for \`${partialHeartbeat.entity}\``);
     this.queue.push(partialHeartbeat);
   }

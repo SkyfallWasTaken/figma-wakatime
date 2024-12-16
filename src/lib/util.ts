@@ -1,4 +1,4 @@
-const PREFIX = "[Figma for WakaTime]";
+const PREFIX = "[WakaTime for Figma]";
 const STYLE = "color: #007acc; font-weight: bold;";
 
 export const log = {
