@@ -55,8 +55,8 @@ type Heartbeat = PartialHeartbeat & {
 
 export default class WakaTime {
   private queue: PartialHeartbeat[] = [];
-  private apiKey: string;
-  private apiUrl: string;
+  apiKey: string;
+  apiUrl: string;
 
   constructor(apiKey: string, apiUrl: string) {
     this.apiKey = apiKey;

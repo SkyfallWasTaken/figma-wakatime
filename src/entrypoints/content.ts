@@ -2,6 +2,7 @@ import pWaitFor from "p-wait-for";
 import { log } from "@/lib/util";
 import { setIntervalAsync } from "set-interval-async";
 import { messenger } from "@/lib/messaging";
+import { apiKey, apiUrl } from "@/lib/store";
 /* import { getWakaService } from "@/lib/waka-service";
  */
 // People often ponder their designs or use sites like Dribbble for inspiration.
@@ -21,6 +22,14 @@ export default defineContentScript({
     log.info("Content script loaded");
     await pWaitFor(() => window.figma !== undefined, { interval: 5000 });
     log.debug("Figma object loaded");
+
+    apiKey.subscribe((value) => {
+      messenger.sendMessage("updateWakaApiKey", value);
+    });
+    apiUrl.subscribe((value) => {
+      messenger.sendMessage("updateWakaApiUrl", value);
+    });
+    messenger.sendMessage("init", null);
 
     const figma = window.figma as PluginAPI;
     /*     const wakatime = getWakaService();
