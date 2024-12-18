@@ -1,16 +1,16 @@
 import pWaitFor from "p-wait-for";
 import { log } from "@/lib/util";
 import { setIntervalAsync } from "set-interval-async";
-/* import { messenger } from "@/lib/messaging";
- */ import { apiKey, apiUrl } from "@/lib/store";
+import { messenger } from "@/lib/messaging";
+import { apiKey, apiUrl } from "@/lib/store";
 /* import { getWakaService } from "@/lib/waka-service";
  */
 // People often ponder their designs or use sites like Dribbble for inspiration.
 // This can lead to long periods of inactivity and leave the user annoyed when
 // all their time hasn't been tracked. To prevent this, we'll allow them to be inactive
 // for up to 10 minutes before we stop sending heartbeats.
-const MAX_INACTIVITY_SECS = 60 * 10;
-const HEARTBEAT_INTERVAL_SECS = 60;
+const MAX_INACTIVITY_MS = 60 * 10 * 1000;
+const HEARTBEAT_INTERVAL_MS = 60 * 1000;
 let lastHeartbeatTs: number | null = null;
 let lastDocUpdateTs: number | null = null;
 let lastDocHash: string | null = null;
@@ -24,13 +24,13 @@ export default defineUnlistedScript(async () => {
   );
   log.debug("Figma object loaded");
 
-  /* apiKey.subscribe((value) => {
+  apiKey.subscribe((value) => {
     messenger.sendMessage("updateWakaApiKey", value);
   });
   apiUrl.subscribe((value) => {
     messenger.sendMessage("updateWakaApiUrl", value);
   });
-  messenger.sendMessage("init", null); */
+  messenger.sendMessage("init", null);
   setIntervalAsync(async () => {
     const root = await figma.getNodeByIdAsync(figma.root.id);
     if (!root) {
@@ -69,17 +69,17 @@ function getEntityName(): string {
 }
 
 function shouldSendHeartbeat(): boolean {
+  const now = Date.now();
   const heartbeatStale =
-    lastHeartbeatTs === null ||
-    Date.now() - lastHeartbeatTs > HEARTBEAT_INTERVAL_SECS * 1000;
-  const active = Date.now() - lastDocUpdateTs! < MAX_INACTIVITY_SECS * 1000;
-  const result =
-    document.hasFocus() && heartbeatStale && lastDocUpdateTs !== null && active;
+    lastHeartbeatTs === null || now - lastHeartbeatTs > HEARTBEAT_INTERVAL_MS;
+  const active =
+    document.hasFocus() && now - lastDocUpdateTs! < MAX_INACTIVITY_MS;
+  const result = heartbeatStale && lastDocUpdateTs !== null && active;
   if (result) {
-    lastHeartbeatTs = Date.now();
+    lastHeartbeatTs = now;
   }
   log.debug(
-    `Should send heartbeat: ${result} (heartbeatStale: ${heartbeatStale}, active: ${active})`
+    `Should send heartbeat: ${result} (heartbeatStale: ${heartbeatStale}, active: ${active}, now: ${now}, lastDocUpdateTs: ${lastDocUpdateTs}, lastHeartbeatTs: ${lastHeartbeatTs})`
   );
 
   return result;

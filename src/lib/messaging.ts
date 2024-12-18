@@ -1,5 +1,5 @@
 import { PartialHeartbeat } from "@/lib/wakatime";
-import { defineExtensionMessaging } from "@webext-core/messaging";
+import { defineCustomEventMessaging } from "@webext-core/messaging/page";
 
 interface ProtocolMap {
   updateWakaApiKey(apiKey: string): void;
@@ -8,4 +8,6 @@ interface ProtocolMap {
   init(data: null): void;
 }
 
-export const messenger = defineExtensionMessaging<ProtocolMap>();
+export const messenger = defineCustomEventMessaging<ProtocolMap>({
+  namespace: "skyfall-figma-wakatime",
+});
