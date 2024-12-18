@@ -9,6 +9,12 @@ export default defineConfig({
     description:
       "Metrics, insights, and time tracking automatically generated from your Figma activity.",
     permissions: ["storage", "scripting", "tabs", "activeTab"], // FIXME: reduce perms
+    web_accessible_resources: [
+      {
+        resources: ["/figma-script.js"],
+        matches: ["https://*.figma.com/*"],
+      },
+    ],
   },
   extensionApi: "chrome",
   modules: ["@wxt-dev/module-svelte"],

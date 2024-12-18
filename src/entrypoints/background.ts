@@ -3,7 +3,7 @@ import { messenger } from "@/lib/messaging";
 import { log } from "@/lib/util";
 
 export default defineBackground(() => {
-  const wakatime = new WakaTime("", "");
+  /*   const wakatime = new WakaTime("", "");
   messenger.onMessage("updateWakaApiKey", (message) => {
     log.debug("Received updateWakaApiKey event");
     wakatime.apiKey = message.data;
@@ -19,7 +19,7 @@ export default defineBackground(() => {
       log.debug("Received heartbeat request", partialHeartbeat);
       wakatime.emitHeartbeat(partialHeartbeat.data);
     });
-  });
+  }); */
 });
 
 /* export default defineBackground(() => {});

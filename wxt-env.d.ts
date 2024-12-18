@@ -1,6 +1,9 @@
 /// <reference types="svelte" />
 declare global {
-  var figma: PluginAPI | undefined;
+  const figma: PluginAPI;
+  interface Window {
+    figma: PluginAPI;
+  }
 }
 
 export {};
