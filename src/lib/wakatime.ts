@@ -79,7 +79,7 @@ export default class WakaTime {
       cursorpos: 0,
     };
 
-    const url = `${this.apiUrl}/heartbeats`;
+    const url = `${this.apiUrl}/heartbeat`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
