@@ -63,30 +63,32 @@ export default class WakaTime {
     this.apiUrl = apiUrl;
   }
 
-  async trySendHeartbeat(partialHeartbeat: PartialHeartbeat) {
-    const heartbeat: Heartbeat = {
-      ...partialHeartbeat,
-      is_write: true,
-      editor: "Figma",
-      machine: `${getBrowser()} on ${getOS()}`,
-      operating_system: getOS(),
-      user_agent: USER_AGENT,
+  async trySendHeartbeats(partialHeartbeats: PartialHeartbeat[]) {
+    const heartbeats = partialHeartbeats.map((partialHeartbeat) => {
+      return {
+        ...partialHeartbeat,
+        is_write: true,
+        editor: "Figma",
+        machine: `${getBrowser()} on ${getOS()}`,
+        operating_system: getOS(),
+        user_agent: USER_AGENT,
 
-      lines: 0,
-      line_additions: 0,
-      line_deletions: 0,
-      lineno: 0,
-      cursorpos: 0,
-    };
+        lines: 0,
+        line_additions: 0,
+        line_deletions: 0,
+        lineno: 0,
+        cursorpos: 0,
+      };
+    });
 
-    const url = `${this.apiUrl}/heartbeat`;
+    const url = `${this.apiUrl}/users/current/heartbeats.bulk`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${this.apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(heartbeat),
+      body: JSON.stringify(heartbeats),
     });
     if (response.status != 201) {
       throw new Error(
@@ -112,12 +114,11 @@ export default class WakaTime {
       log.debug(`${this.queue.length} heartbeats in queue.`);
 
       try {
-        const partialHeartbeat = this.queue[0];
-        await this.trySendHeartbeat(partialHeartbeat);
-        log.debug("Flushed heartbeat.");
-        this.queue.shift();
+        await this.trySendHeartbeats(this.queue);
+        log.debug("Flushed heartbeats.");
+        this.queue = [];
       } catch (error) {
-        log.warn("Failed to send heartbeat:", error);
+        log.warn("Failed to send heartbeats:", error);
       }
     }, 10000);
   }

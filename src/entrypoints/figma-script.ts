@@ -1,10 +1,8 @@
 import pWaitFor from "p-wait-for";
 import { log } from "@/lib/util";
 import { setIntervalAsync } from "set-interval-async";
-import { messenger } from "@/lib/messaging";
-import { apiKey, apiUrl } from "@/lib/store";
-/* import { getWakaService } from "@/lib/waka-service";
- */
+import { m2iMessenger } from "@/lib/messaging/m2i-messaging";
+
 // People often ponder their designs or use sites like Dribbble for inspiration.
 // This can lead to long periods of inactivity and leave the user annoyed when
 // all their time hasn't been tracked. To prevent this, we'll allow them to be inactive
@@ -40,7 +38,7 @@ export default defineUnlistedScript(async () => {
 
     if (shouldSendHeartbeat()) {
       log.debug("Sending heartbeat...");
-      await messenger.sendMessage("emitHeartbeat", {
+      await m2iMessenger.sendMessage("emitHeartbeat", {
         project: window.figma.root.name,
         entity: getEntityName(),
         time: Math.floor(Date.now() / 1000),
