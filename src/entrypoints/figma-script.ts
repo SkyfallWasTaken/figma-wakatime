@@ -24,13 +24,6 @@ export default defineUnlistedScript(async () => {
   );
   log.debug("Figma object loaded");
 
-  apiKey.subscribe((value) => {
-    messenger.sendMessage("updateWakaApiKey", value);
-  });
-  apiUrl.subscribe((value) => {
-    messenger.sendMessage("updateWakaApiUrl", value);
-  });
-  messenger.sendMessage("init", null);
   setIntervalAsync(async () => {
     const root = await figma.getNodeByIdAsync(figma.root.id);
     if (!root) {
@@ -47,14 +40,14 @@ export default defineUnlistedScript(async () => {
 
     if (shouldSendHeartbeat()) {
       log.debug("Sending heartbeat...");
-      /* await messenger.sendMessage("emitHeartbeat", {
+      await messenger.sendMessage("emitHeartbeat", {
         project: window.figma.root.name,
-        entity: getEntityName(window.figma),
+        entity: getEntityName(),
         time: Math.floor(Date.now() / 1000),
         type: "file",
         language: "Figma",
         category: "coding",
-      }); */
+      });
     }
   }, 12000);
   log.info(`Listening for changes to document \`${figma.root.name}\``);
