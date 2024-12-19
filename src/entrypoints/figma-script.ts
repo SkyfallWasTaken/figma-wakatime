@@ -1,5 +1,5 @@
 import pWaitFor from "p-wait-for";
-import { getFileLastEditAt, log } from "@/lib/util";
+import { getFileLastActivityAt, log } from "@/lib/util";
 import { setIntervalAsync, clearIntervalAsync } from "set-interval-async";
 import { m2iMessenger } from "@/lib/messaging/m2i-messaging";
 
@@ -38,7 +38,7 @@ export default defineUnlistedScript(async () => {
       return;
     }
 
-    lastDocUpdateTs = await getFileLastEditAt(figma.fileKey!, figmaCookie)
+    lastDocUpdateTs = await getFileLastActivityAt(figma.fileKey!, figmaCookie)
 
     if (shouldSendHeartbeat()) {
       log.debug("Sending heartbeat...");

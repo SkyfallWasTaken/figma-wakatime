@@ -8,7 +8,7 @@ export const log = {
   error: (...args: any[]) => console.error(`%c${PREFIX}`, STYLE, ...args),
 };
 
-export async function getFileLastEditAt(filekey: string, cookie: string) {
+export async function getFileLastActivityAt(filekey: string, cookie: string) {
   const response = await fetch(`https://www.figma.com/api/files/${filekey}/view`, {
     method: "POST",
     cache: "no-cache",
@@ -23,7 +23,9 @@ export async function getFileLastEditAt(filekey: string, cookie: string) {
   if (json.error) {
     throw new Error("An error occurred while fetching file metadata: " + JSON.stringify(json));
   }
-  // I know the fn says "last_edit_at" but that's kinda laggy -
-  // last_view_at is more accurate
-  return new Date(json.meta.last_view_at).getTime();
+  
+  const lastEditTime = new Date(json.meta.last_edit_at).getTime();
+  const lastViewTime = new Date(json.meta.last_view_at).getTime();
+  
+  return Math.max(lastEditTime, lastViewTime);
 }
