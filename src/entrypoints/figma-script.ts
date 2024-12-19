@@ -1,5 +1,5 @@
 import pWaitFor from "p-wait-for";
-import { log } from "@/lib/util";
+import { getFileLastEditAt, log } from "@/lib/util";
 import { setIntervalAsync } from "set-interval-async";
 import { m2iMessenger } from "@/lib/messaging/m2i-messaging";
 
@@ -11,7 +11,6 @@ const MAX_INACTIVITY_MS = 60 * 10 * 1000;
 const HEARTBEAT_INTERVAL_MS = 60 * 1000;
 let lastHeartbeatTs: number | null = null;
 let lastDocUpdateTs: number | null = null;
-let lastDocHash: string | null = null;
 
 export default defineUnlistedScript(async () => {
   log.info("Unlisted content script loaded");
@@ -28,6 +27,8 @@ export default defineUnlistedScript(async () => {
     location.reload();
   }
   log.debug("Figma object loaded");
+  const figmaCookie = await m2iMessenger.sendMessage("getFigmaCookie", void 0);
+  log.debug("Got Figma cookie");
 
   setIntervalAsync(async () => {
     const root = await figma.getNodeByIdAsync(figma.root.id);
@@ -36,12 +37,7 @@ export default defineUnlistedScript(async () => {
       return;
     }
 
-    const currentDocHash = Math.random().toString();
-    if (currentDocHash != lastDocHash) {
-      log.debug("Document has changed");
-      lastDocHash = currentDocHash;
-      lastDocUpdateTs = Date.now();
-    }
+    lastDocUpdateTs = await getFileLastEditAt(figma.fileKey!, figmaCookie)
 
     if (shouldSendHeartbeat()) {
       log.debug("Sending heartbeat...");

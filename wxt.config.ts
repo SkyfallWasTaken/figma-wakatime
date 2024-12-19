@@ -8,7 +8,7 @@ export default defineConfig({
     version: "1.0.0",
     description:
       "Metrics, insights, and time tracking automatically generated from your Figma activity.",
-    permissions: ["storage", "scripting", "tabs", "activeTab"], // FIXME: reduce perms
+    permissions: ["storage", "scripting", "tabs", "activeTab", "cookies"], // FIXME: reduce perms
     host_permissions: ["<all_urls>"],
     web_accessible_resources: [
       {

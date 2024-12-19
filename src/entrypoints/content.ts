@@ -10,6 +10,9 @@ export default defineContentScript({
       log.debug("I have a heartbeat! Yay!");
       i2bMessenger.sendMessage("emitHeartbeat", message.data);
     });
+    m2iMessenger.onMessage("getFigmaCookie", async () => {
+      return await i2bMessenger.sendMessage("getFigmaCookie", void 0);
+    });
     await injectScript("/figma-script.js");
   },
 });

@@ -45,13 +45,6 @@ type ZeroedFields = {
   lineno: number;
   cursorpos: number;
 };
-type Heartbeat = PartialHeartbeat & {
-  is_write: boolean;
-  editor: "Figma";
-  machine: string;
-  operating_system: string;
-  user_agent: string;
-} & ZeroedFields;
 
 export default class WakaTime {
   private queue: PartialHeartbeat[] = [];
@@ -123,7 +116,7 @@ export default class WakaTime {
           scheduleNextFlush(this.currentInterval);
           return;
         }
-        
+
         log.debug(`${this.queue.length} heartbeats in queue.`);
 
         try {
