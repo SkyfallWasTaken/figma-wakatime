@@ -19,6 +19,7 @@
     "@figma/plugin-typings": "^1.105.0",
     "@tsconfig/svelte": "^5.0.4",
     "@types/chrome": "^0.0.287",
+    "@wxt-dev/auto-icons": "^1.0.2",
     "@wxt-dev/module-svelte": "^2.0.2",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.22",
@@ -27,17 +28,15 @@
     "tailwindcss": "^3.4.16",
     "tslib": "^2.8.1",
     "typescript": "^5.7.2",
-    "wxt": "^0.19.22"
-  },
-  "dependencies": {
+    "wxt": "^0.19.22",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
-    "@types/common-tags": "^1.8.4",
+    "@types/common-tags": "^1.8.4"
+  },
+  "dependencies": {
     "@webext-core/messaging": "^2.1.0",
     "common-tags": "^1.8.2",
-    "dequal": "^2.0.3",
     "lucide-svelte": "^0.468.0",
-    "object-hash": "^3.0.0",
     "p-wait-for": "^5.0.2",
     "set-interval-async": "^3.0.3"
   },
