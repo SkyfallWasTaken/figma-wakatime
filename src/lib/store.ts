@@ -6,7 +6,7 @@ import type { StorageItemKey } from "wxt/storage";
 // but then the changes don't propagate from popup to content/background.
 // Improvements welcome!
 function createStore<T>(value: T, storageKey: StorageItemKey) {
-  const { subscribe, set } = writable(value);
+  const { subscribe, set } = writable<T | null>(null);
 
   const storageItem = storage.defineItem<T>(storageKey, {
     fallback: value,
