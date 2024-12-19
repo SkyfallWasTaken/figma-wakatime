@@ -27,7 +27,7 @@ Track your Figma design time automatically with WakaTime. Get insights about you
 
 ## Development
 
-This extension is built using [WXT](https://wxt.dev) and TypeScript.
+This extension is built using [WXT](https://wxt.dev) and TypeScript. You also need [Bun v1.1.40](https://bun.sh) to run the development server and build the extension.
 
 ```bash
 # Install dependencies
