@@ -2,9 +2,10 @@ import { m2iMessenger } from "@/lib/messaging/m2i-messaging";
 import { i2bMessenger } from "@/lib/messaging/i2b-messaging";
 import { log } from "@/lib/util";
 
+const watchPattern = new MatchPattern("*://*.figma.com/design/*")
 export default defineContentScript({
-  matches: ["*://*.figma.com/design/*"],
-  async main() {
+  matches: ["*://*.figma.com/*"],
+  async main(ctx) {
     log.info("Content script loaded");
     m2iMessenger.onMessage("emitHeartbeat", (message) => {
       log.debug("I have a heartbeat! Yay!");
@@ -13,6 +14,20 @@ export default defineContentScript({
     m2iMessenger.onMessage("getFigmaCookie", async () => {
       return await i2bMessenger.sendMessage("getFigmaCookie", void 0);
     });
-    await injectScript("/figma-script.js");
+
+    let injected = false;
+    ctx.addEventListener(window, 'wxt:locationchange', async ({ newUrl }) => {
+      log.debug(`Location changed to ${newUrl}`);
+      let match = watchPattern.includes(newUrl);
+      if (match && !injected) {
+        log.debug("Injecting content script");
+        await injectScript("/figma-script.js");
+        injected = true;
+      } else if (!match && injected) {
+        log.debug("Uninjecting content script");
+        await m2iMessenger.sendMessage("uninject", void 0);
+        injected = false;
+      }
+    });
   },
 });

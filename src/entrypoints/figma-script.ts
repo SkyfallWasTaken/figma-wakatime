@@ -1,6 +1,6 @@
 import pWaitFor from "p-wait-for";
 import { getFileLastEditAt, log } from "@/lib/util";
-import { setIntervalAsync } from "set-interval-async";
+import { setIntervalAsync, clearIntervalAsync } from "set-interval-async";
 import { m2iMessenger } from "@/lib/messaging/m2i-messaging";
 
 // People often ponder their designs or use sites like Dribbble for inspiration.
@@ -30,7 +30,8 @@ export default defineUnlistedScript(async () => {
   const figmaCookie = await m2iMessenger.sendMessage("getFigmaCookie", void 0);
   log.debug("Got Figma cookie");
 
-  setIntervalAsync(async () => {
+  const interval = setIntervalAsync(async () => {
+    if (!figma) return; // Might be removed on page navigation
     const root = await figma.getNodeByIdAsync(figma.root.id);
     if (!root) {
       log.error("Could not find root node. This should never happen.");
@@ -53,6 +54,11 @@ export default defineUnlistedScript(async () => {
     }
   }, 12000);
   log.info(`Listening for changes to document \`${figma.root.name}\``);
+
+  m2iMessenger.onMessage("uninject", async () => {
+    log.info("Uninjecting content script");
+    await clearIntervalAsync(interval);
+  });
 });
 
 function getEntityName(): string {
