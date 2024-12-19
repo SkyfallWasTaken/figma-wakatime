@@ -6,7 +6,6 @@ export default defineConfig({
   modules: ["@wxt-dev/auto-icons", "@wxt-dev/module-svelte"],
   manifest: {
     name: "WakaTime for Figma",
-    version: "1.0.0",
     description:
       "Metrics, insights, and time tracking automatically generated from your Figma activity.",
     permissions: ["storage", "activeTab", "cookies"],
