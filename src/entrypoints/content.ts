@@ -7,9 +7,9 @@ export default defineContentScript({
   matches: ["*://*.figma.com/*"],
   async main(ctx) {
     log.info("Content script loaded");
-    m2iMessenger.onMessage("emitHeartbeat", (message) => {
+    m2iMessenger.onMessage("emitHeartbeat", async (message) => {
       log.debug("I have a heartbeat! Yay!");
-      i2bMessenger.sendMessage("emitHeartbeat", message.data);
+      return await i2bMessenger.sendMessage("emitHeartbeat", message.data);
     });
     m2iMessenger.onMessage("getFigmaCookie", async () => {
       return await i2bMessenger.sendMessage("getFigmaCookie", void 0);

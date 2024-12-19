@@ -58,6 +58,7 @@ export default defineUnlistedScript(async () => {
   m2iMessenger.onMessage("uninject", async () => {
     log.info("Uninjecting content script");
     await clearIntervalAsync(interval);
+    return;
   });
 });
 
