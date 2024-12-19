@@ -1,5 +1,9 @@
 # WakaTime for Figma
 
+[![image](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/en-US/firefox/addon/wakatime-for-figma/)
+
+Chrome builds can be manually downloaded from GitHub Actions artifacts, until it's been approved by Google.
+
 ![WakaTime for Figma](https://cloud-kw8aows5e-hack-club-bot.vercel.app/0svg.png)
 
 Track your Figma design time automatically with WakaTime. Get insights about your design activity, time spent on different projects, and visualize your productivity patterns.
