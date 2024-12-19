@@ -16,10 +16,17 @@ let lastDocHash: string | null = null;
 export default defineUnlistedScript(async () => {
   log.info("Unlisted content script loaded");
 
-  await pWaitFor(
-    () => window.figma !== undefined && typeof window.figma === "object",
-    { interval: 5000 }
-  );
+  try {
+    await pWaitFor(
+      () => window.figma !== undefined && typeof window.figma === "object",
+      { interval: 5000, timeout: 12000 }
+    );
+  } catch (e) {
+    alert(
+      "Uh oh, the Figma object hasn't been loaded. Please make sure to stay focused on the page while we refresh!"
+    );
+    location.reload();
+  }
   log.debug("Figma object loaded");
 
   setIntervalAsync(async () => {
@@ -38,8 +45,9 @@ export default defineUnlistedScript(async () => {
 
     if (shouldSendHeartbeat()) {
       log.debug("Sending heartbeat...");
+      log.debug(figma.root);
       await m2iMessenger.sendMessage("emitHeartbeat", {
-        project: window.figma.root.name,
+        project: figma.root.name,
         entity: getEntityName(),
         time: Math.floor(Date.now() / 1000),
         type: "file",
