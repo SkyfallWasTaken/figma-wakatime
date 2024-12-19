@@ -2,6 +2,10 @@
 
 <a href="https://addons.mozilla.org/en-US/firefox/addon/wakatime-for-figma/"><img src="https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png"></a>
 
+<p style="font-size: smaller;">The Chrome extension can currently be manually downloaded. We're still waiting for Google to approve the Chrome Web Store listing.</p>
+
+---
+
 Track your Figma design time automatically with WakaTime. Get insights about your design activity, time spent on different projects, and visualize your productivity patterns.
 
 - 🎨 **Automatic time tracking** for your Figma work
