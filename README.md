@@ -64,7 +64,7 @@ The extension tracks:
 
 ## License
 
-WakaTime for Figma is released under the [GNU GPLv3 License.](https://github.com/SkyfallWasTaken/figma-wakatime/blob/main/LICENSE).
+WakaTime for Figma is released under the [GNU GPLv3 License.](https://github.com/SkyfallWasTaken/figma-wakatime/blob/main/LICENSE)
 
 ## Support
 
