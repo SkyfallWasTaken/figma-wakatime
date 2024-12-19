@@ -60,6 +60,8 @@ export default defineUnlistedScript(async () => {
     await clearIntervalAsync(interval);
     return;
   });
+
+  await figma.notify("WakaTime for Figma is running!");
 });
 
 function getEntityName(): string {
