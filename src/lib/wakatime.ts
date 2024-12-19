@@ -55,6 +55,10 @@ type Heartbeat = PartialHeartbeat & {
 
 export default class WakaTime {
   private queue: PartialHeartbeat[] = [];
+  private baseInterval = 10000; // 10 seconds
+  private maxInterval = 300000; // 5 minutes
+  private currentInterval = 10000;
+  private retryCount = 0;
   apiKey: string;
   apiUrl: string;
 
@@ -108,18 +112,42 @@ export default class WakaTime {
     log.debug(`Queuing heartbeat for \`${partialHeartbeat.entity}\``);
     this.queue.push(partialHeartbeat);
   }
-  startFlushingHeartbeats() {
-    setIntervalAsync(async () => {
-      if (this.queue.length === 0) return;
-      log.debug(`${this.queue.length} heartbeats in queue.`);
 
-      try {
-        await this.trySendHeartbeats(this.queue);
-        log.debug("Flushed heartbeats.");
-        this.queue = [];
-      } catch (error) {
-        log.warn("Failed to send heartbeats:", error);
-      }
-    }, 10000);
+  startFlushingHeartbeats() {
+    const scheduleNextFlush = (delay: number) => {
+      setTimeout(async () => {
+        if (this.queue.length === 0) {
+          // Reset backoff on success with empty queue
+          this.currentInterval = this.baseInterval;
+          this.retryCount = 0;
+          scheduleNextFlush(this.currentInterval);
+          return;
+        }
+        
+        log.debug(`${this.queue.length} heartbeats in queue.`);
+
+        try {
+          await this.trySendHeartbeats(this.queue);
+          log.debug("Flushed heartbeats.");
+          this.queue = [];
+          // Reset backoff on success
+          this.currentInterval = this.baseInterval;
+          this.retryCount = 0;
+        } catch (error) {
+          log.warn("Failed to send heartbeats:", error);
+          // Implement exponential backoff
+          this.retryCount++;
+          this.currentInterval = Math.min(
+            this.baseInterval * Math.pow(2, this.retryCount),
+            this.maxInterval
+          );
+          log.debug(`Retrying in ${this.currentInterval / 1000} seconds`);
+        }
+
+        scheduleNextFlush(this.currentInterval);
+      }, delay);
+    };
+
+    scheduleNextFlush(this.baseInterval);
   }
 }
