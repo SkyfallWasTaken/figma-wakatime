@@ -6,8 +6,8 @@ import { m2iMessenger } from "@/lib/messaging/m2i-messaging";
 // People often ponder their designs or use sites like Dribbble for inspiration.
 // This can lead to long periods of inactivity and leave the user annoyed when
 // all their time hasn't been tracked. To prevent this, we'll allow them to be inactive
-// for up to 10 minutes before we stop sending heartbeats.
-const MAX_INACTIVITY_MS = 60 * 10 * 1000;
+// for up to 6 minutes before we stop sending heartbeats.
+const MAX_INACTIVITY_MS = 60 * 6 * 1000;
 const HEARTBEAT_INTERVAL_MS = 60 * 1000;
 let lastHeartbeatTs: number | null = null;
 let lastDocUpdateTs: number | null = null;
