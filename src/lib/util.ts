@@ -8,24 +8,13 @@ export const log = {
   error: (...args: any[]) => console.error(`%c${PREFIX}`, STYLE, ...args),
 };
 
-export async function getFileLastActivityAt(filekey: string, cookie: string) {
-  const response = await fetch(`https://www.figma.com/api/files/${filekey}/view`, {
-    method: "POST",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-cache",
-      "x-csrf-bypass": "yes",
-      Cookie: `__Host-figma.authn=${encodeURIComponent(cookie)}`,
-    },
+export function sha256(string: string) {
+  const utf8 = new TextEncoder().encode(string);
+  return crypto.subtle.digest('SHA-256', utf8).then((hashBuffer) => {
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray
+      .map((bytes) => bytes.toString(16).padStart(2, '0'))
+      .join('');
+    return hashHex;
   });
-  const json = await response.json();
-  if (json.error) {
-    throw new Error("An error occurred while fetching file metadata: " + JSON.stringify(json));
-  }
-  
-  const lastEditTime = new Date(json.meta.last_edit_at).getTime();
-  const lastViewTime = new Date(json.meta.last_view_at).getTime();
-  
-  return Math.max(lastEditTime, lastViewTime);
 }

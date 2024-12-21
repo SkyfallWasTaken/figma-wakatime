@@ -24,7 +24,7 @@
       const testHeartbeat = {
         entity: "welcome.txt",
         type: "file" as const,
-        time: 1, // epoch 1 (1st Jan 1970)
+        time: Date.now() / 1000, // epoch 1 (1st Jan 1970)
         project: "welcome",
         language: "text",
         category: "coding" as const,

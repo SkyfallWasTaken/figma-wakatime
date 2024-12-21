@@ -11,8 +11,8 @@ export default defineContentScript({
       log.debug("I have a heartbeat! Yay!");
       return await i2bMessenger.sendMessage("emitHeartbeat", message.data);
     });
-    m2iMessenger.onMessage("getFigmaCookie", async () => {
-      return await i2bMessenger.sendMessage("getFigmaCookie", void 0);
+    m2iMessenger.onMessage("getDocHash", async (message) => {
+      return await i2bMessenger.sendMessage("getDocHash", message.data);
     });
 
     let injected = false;

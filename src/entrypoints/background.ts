@@ -1,7 +1,7 @@
 import WakaTime from "@/lib/wakatime";
 import { i2bMessenger } from "@/lib/messaging/i2b-messaging";
-import { log } from "@/lib/util";
-import { wakaApiKey, apiUrl } from "@/lib/store";
+import { log, sha256 } from "@/lib/util";
+import { wakaApiKey, figmaApiKey, apiUrl } from "@/lib/store";
 import { get } from "svelte/store";
 
 export default defineBackground(() => {
@@ -18,18 +18,27 @@ export default defineBackground(() => {
     }
   });
   i2bMessenger.onMessage("emitHeartbeat", async (message) => {
-    log.debug("I have a heartbeat!");
     wakatime.emitHeartbeat(message.data);
   });
-  i2bMessenger.onMessage("getFigmaCookie", async () => {
-    return (await browser.cookies.get({
-      name: "__Host-figma.authn",
-      url: "https://www.figma.com",
-    }))?.value!
+
+  i2bMessenger.onMessage("getDocHash", async (message) => {
+    const filekey = message.data;
+    const response = await fetch("https://api.figma.com/v1/files/" + filekey, {
+      headers: {
+        "X-Figma-Token": get(figmaApiKey)!,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} when getting file ${filekey}`);
+    }
+    const responseText = await response.text();
+    const hash = await sha256(responseText);
+    log.debug(`Hash for file ${filekey} is ${hash}`);
+    return hash;
   });
 
   wakatime.startFlushingHeartbeats();
 });
 
-/* export default defineBackground(() => {});
+/* export default defineBackground(() => {
  */

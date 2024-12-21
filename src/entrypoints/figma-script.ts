@@ -1,5 +1,5 @@
 import pWaitFor from "p-wait-for";
-import { getFileLastActivityAt, log } from "@/lib/util";
+import { log } from "@/lib/util";
 import { setIntervalAsync, clearIntervalAsync } from "set-interval-async";
 import { m2iMessenger } from "@/lib/messaging/m2i-messaging";
 
@@ -27,9 +27,8 @@ export default defineUnlistedScript(async () => {
     location.reload();
   }
   log.debug("Figma object loaded");
-  const figmaCookie = await m2iMessenger.sendMessage("getFigmaCookie", void 0);
-  log.debug("Got Figma cookie");
 
+  let docHash: string | null = null;
   const interval = setIntervalAsync(async () => {
     if (!figma) return; // Might be removed on page navigation
     const root = await figma.getNodeByIdAsync(figma.root.id);
@@ -38,7 +37,16 @@ export default defineUnlistedScript(async () => {
       return;
     }
 
-    lastDocUpdateTs = await getFileLastActivityAt(figma.fileKey!, figmaCookie)
+    try {
+      const newDocHash = await m2iMessenger.sendMessage("getDocHash", figma.fileKey!);
+      if (newDocHash !== docHash) {
+        log.debug("Document changed!");
+        lastDocUpdateTs = Date.now();
+        docHash = newDocHash;
+      }
+    } catch (e) {
+      log.error("Failed to get document hash", e);
+    }
 
     if (shouldSendHeartbeat()) {
       log.debug("Sending heartbeat...");
