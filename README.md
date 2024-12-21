@@ -1,6 +1,7 @@
 # WakaTime for Figma
 
-<a href="https://addons.mozilla.org/en-US/firefox/addon/wakatime-for-figma/"><img src="https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png"></a>
+<a href="https://addons.mozilla.org/en-US/firefox/addon/wakatime-for-figma/">Download for Firefox</a>
+<a href="https://nightly.link/SkyfallWasTaken/figma-wakatime/workflows/build/main/chrome-extension.zip">Download for Chrome (manual install)</a>
 
 The Chrome extension can currently be manually downloaded. We're still waiting for Google to approve the Chrome Web Store listing.
 
