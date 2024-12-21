@@ -24,7 +24,8 @@ function createStore<T>(value: T, storageKey: StorageItemKey) {
   };
 }
 
-export const apiKey = createStore("", "local:apiKey");
+export const wakaApiKey = createStore("", "local:apiKey");
+export const figmaApiKey = createStore("", "local:figmaApiKey");
 export const apiUrl = createStore(
   "https://api.wakatime.com/api/v1",
   "local:apiUrl"

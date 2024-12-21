@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { apiUrl, apiKey } from "@/lib/store";
+  import { apiUrl, wakaApiKey, figmaApiKey } from "@/lib/store";
   import Tester from "@/lib/components/Tester.svelte";
   import "./app.css";
 </script>
@@ -13,7 +13,7 @@
     </div>
     <input
       type="password"
-      bind:value={$apiKey}
+      bind:value={$wakaApiKey}
       placeholder="Type here"
       class="input input-bordered w-full max-w-xs"
     />
@@ -32,6 +32,27 @@
     <div class="label">
       <span class="label-text-alt"
         >Only change this if you know what you're doing</span
+      >
+    </div>
+  </label>
+
+  <label class="form-control w-full max-w-xs">
+    <div class="label">
+      <span class="label-text">Figma API Key</span>
+    </div>
+    <input
+      type="password"
+      bind:value={$figmaApiKey}
+      placeholder="Type here"
+      class="input input-bordered w-full max-w-xs"
+    />
+    <div class="label">
+      <span class="label-text-alt"
+        ><a
+          href="https://files.catbox.moe/jfkqc7.mp4"
+          target="_blank"
+          class="underline">How do I get this?</a
+        ></span
       >
     </div>
   </label>

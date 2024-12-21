@@ -1,13 +1,13 @@
 import WakaTime from "@/lib/wakatime";
 import { i2bMessenger } from "@/lib/messaging/i2b-messaging";
 import { log } from "@/lib/util";
-import { apiKey, apiUrl } from "@/lib/store";
+import { wakaApiKey, apiUrl } from "@/lib/store";
 import { get } from "svelte/store";
 
 export default defineBackground(() => {
   log.info("Background script loaded");
-  const wakatime = new WakaTime(get(apiKey)!, get(apiUrl)!);
-  apiKey.subscribe((value) => {
+  const wakatime = new WakaTime(get(wakaApiKey)!, get(apiUrl)!);
+  wakaApiKey.subscribe((value) => {
     if (value) {
       wakatime.apiKey = value;
     }
