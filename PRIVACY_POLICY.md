@@ -6,7 +6,7 @@ WakaTime for Figma is a browser extension that tracks your design time and activ
 ## Data Collection
 
 ### Authentication Data
-- **Figma Authentication**: The extension uses Figma cookies to authenticate with Figma's official API. These cookies are only used for API authentication and are never stored or transmitted elsewhere.
+- **Figma Authentication**: The extension uses your Figma Personal Access Token to authenticate with Figma's official API. Your PAT is only used for API authentication and is never stored or transmitted elsewhere.
 - **WakaTime Authentication**: Your WakaTime API key and API URL are stored locally in your browser's secure storage. These credentials are only used to send activity data to WakaTime's servers.
 
 ### Activity Data
@@ -19,12 +19,12 @@ We collect the following information about your Figma usage:
 ### What we don't collect
 - File contents or design assets
 - Personal information beyond what's listed above
-- Figma account credentials
 - Screenshots or visual content
 - Communication or messages
 
 ## Data Usage
 - All collected data is sent directly to WakaTime's servers (or your specified alternative server for High Seas users)
+- The Figma file is SHA256 hashed on the client-side, and neither the hash nor the original file are ever sent elsewhere
 - Data is used solely for generating time tracking statistics and activity reports
 - No data is sold or shared with third parties
 
