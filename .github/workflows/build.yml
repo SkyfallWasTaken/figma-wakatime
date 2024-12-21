@@ -1,8 +1,10 @@
-name: Build Extension
+name: Build
 
 on:
   push:
     branches: [main]
+    tags:
+      - 'v*'
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -41,7 +43,19 @@ jobs:
           path: .output/firefox-mv2
           if-no-files-found: error
 
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            .output/figma-wakatime-chrome.zip
+            .output/figma-wakatime-firefox.zip
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+
       - name: Upload to AMO
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: trmcnvn/firefox-addon@v1
         with:
           uuid: ${{ secrets.FIREFOX_UUID }}
