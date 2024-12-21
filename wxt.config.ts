@@ -4,6 +4,9 @@ import { defineConfig } from "wxt";
 export default defineConfig({
   srcDir: "src",
   modules: ["@wxt-dev/auto-icons", "@wxt-dev/module-svelte"],
+  zip: {
+    artifactTemplate: "{{name}}-{{browser}}.zip",
+  },
   manifest: {
     name: "WakaTime for Figma",
     description:
