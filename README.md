@@ -20,7 +20,8 @@ Track your Figma design time automatically with WakaTime. Get insights about you
 ### For WakaTime users
 1. Install the WakaTime browser extension
 2. Get your WakaTime API key from [WakaTime Settings](https://wakatime.com/settings/account), click the extension icon in your toolbar, and paste it in.
-3. The extension will automatically start tracking your Figma activity
+3. Add a Figma API Key - a tutorial is linked in the extension popup
+4. The extension will automatically start tracking your Figma activity
 
 ### For High Seas users
 1. Install the WakaTime browser extension
@@ -28,7 +29,8 @@ Track your Figma design time automatically with WakaTime. Get insights about you
 3. Scroll down, and click the small `View instructions for all platforms` link
 4. Scroll down, till you see the `Script not working?` section
 5. Copy the API key and API URL parts from the instructions. Then click on the WakaTime icon in your toolbar/extensions section and paste them in
-6. The extension will automatically start tracking your Figma activity
+6. Add a Figma API Key - a tutorial is linked in the extension popup
+7. The extension will automatically start tracking your Figma activity
 
 ## Development
 
