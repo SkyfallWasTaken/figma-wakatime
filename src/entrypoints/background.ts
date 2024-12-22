@@ -29,6 +29,7 @@ export default defineBackground(() => {
       },
     });
     if (!response.ok) {
+      console.log(await response.text());
       throw new Error(`HTTP ${response.status} when getting file ${filekey}`);
     }
     const responseText = await response.text();

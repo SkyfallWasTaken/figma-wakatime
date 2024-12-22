@@ -11,7 +11,7 @@ export default defineConfig({
     name: "WakaTime for Figma",
     description:
       "Metrics, insights, and time tracking automatically generated from your Figma activity.",
-    permissions: ["storage", "activeTab", "cookies"],
+    permissions: ["storage"],
     host_permissions: ["<all_urls>"],
     web_accessible_resources: [
       {
