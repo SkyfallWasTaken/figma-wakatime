@@ -14,7 +14,7 @@ function createStore<T>(value: T, storageKey: StorageItemKey) {
 
   storageItem.getValue().then(set);
 
-  const unwatch = storageItem.watch(set); // not sure when or where to call unwatch
+  storageItem.watch(set);
 
   return {
     subscribe,

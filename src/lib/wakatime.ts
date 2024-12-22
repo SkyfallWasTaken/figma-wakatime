@@ -1,7 +1,6 @@
 import { version } from "../../package.json";
 import { stripIndents } from "common-tags";
 import { log } from "@/lib/util";
-import { setIntervalAsync } from "set-interval-async";
 
 function getOS(): string {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -38,13 +37,6 @@ export interface PartialHeartbeat {
   project: string;
   language: string;
 }
-type ZeroedFields = {
-  lines: number;
-  line_additions: number;
-  line_deletions: number;
-  lineno: number;
-  cursorpos: number;
-};
 
 export default class WakaTime {
   private queue: PartialHeartbeat[] = [];

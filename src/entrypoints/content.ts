@@ -18,7 +18,7 @@ export default defineContentScript({
     let injected = false;
     ctx.addEventListener(window, 'wxt:locationchange', async ({ newUrl }) => {
       log.debug(`Location changed to ${newUrl}`);
-      let match = watchPattern.includes(newUrl);
+      const match = watchPattern.includes(newUrl);
       if (match && !injected) {
         log.debug("Injecting content script");
         await injectScript("/figma-script.js");

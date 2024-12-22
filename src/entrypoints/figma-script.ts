@@ -24,6 +24,7 @@ export default defineUnlistedScript(async () => {
     alert(
       "Uh oh, the Figma object hasn't been loaded. Please make sure to stay focused on the page while we refresh!"
     );
+    log.error("Figma object not loaded", e);
     location.reload();
   }
   log.debug("Figma object loaded");
