@@ -6,8 +6,6 @@ Track your Figma design time automatically with WakaTime. Get insights about you
 - 🚫 Privacy-focused: only tracks when you're actively working
 - 🌐 Works across all Figma files and projects
 
-Installation
-
 For WakaTime users
 1. Install the WakaTime browser extension
 2. Get your WakaTime API key from [WakaTime Settings](https://wakatime.com/settings/account), click the extension icon in your toolbar, and paste it in.
