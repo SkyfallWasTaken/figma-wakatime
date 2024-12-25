@@ -1,6 +1,6 @@
 import { version } from "../../package.json";
 import { stripIndents } from "common-tags";
-import { log } from "@/lib/util";
+import { base64Encode, log } from "@/lib/util";
 
 function getOS(): string {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -62,11 +62,11 @@ export default class WakaTime {
         operating_system: getOS(),
         user_agent: USER_AGENT,
 
-        lines: 0,
+        lines: 1,
         line_additions: 0,
         line_deletions: 0,
-        lineno: 0,
-        cursorpos: 0,
+        lineno: 1,
+        cursorpos: 1,
       };
     });
 
@@ -74,12 +74,12 @@ export default class WakaTime {
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${this.apiKey}`,
+        Authorization: `Basic ${await base64Encode(this.apiKey)}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(heartbeats),
     });
-    if (response.status != 201) {
+    if (response.status != 201 && response.status != 202) {
       throw new Error(
         stripIndents`
           Failed to send heartbeat to WakaTime API.
@@ -88,6 +88,8 @@ export default class WakaTime {
           API URL: ${url}
           API Key Length: ${this.apiKey.length}
           User Agent: ${USER_AGENT}
+
+          ${await response.text()}
         `.trim()
       );
     }

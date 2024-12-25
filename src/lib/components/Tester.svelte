@@ -22,7 +22,7 @@
 
     try {
       const testHeartbeat = {
-        entity: "welcome.txt",
+        entity: `figma-wakatime-${Date.now()}.txt`,
         type: "file" as const,
         time: Date.now() / 1000, // epoch 1 (1st Jan 1970)
         project: "welcome",

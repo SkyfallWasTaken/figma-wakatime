@@ -18,3 +18,12 @@ export function sha256(string: string) {
     return hashHex;
   });
 }
+
+export async function base64Encode(str: string) {
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(str);
+  const base64 = btoa(
+    String.fromCharCode(...new Uint8Array(bytes))
+  );
+  return base64;
+}
