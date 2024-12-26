@@ -58,7 +58,7 @@ export default defineUnlistedScript(async () => {
         time: Math.floor(Date.now() / 1000),
         type: "file",
         language: "Figma",
-        category: "coding",
+        category: "designing",
       });
     }
   }, 12000);

@@ -32,7 +32,7 @@ log.info(`Sending heartbeats with User-Agent: ${USER_AGENT}`);
 export interface PartialHeartbeat {
   entity: string;
   type: "file";
-  category: "coding";
+  category: "designing";
   time: number;
   project: string;
   language: string;
