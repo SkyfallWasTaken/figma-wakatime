@@ -37,6 +37,7 @@ export interface PartialHeartbeat {
   project: string;
   language: string;
   is_write: boolean;
+  lines?: number;
 }
 
 export default class WakaTime {
@@ -56,13 +57,14 @@ export default class WakaTime {
   async trySendHeartbeats(partialHeartbeats: PartialHeartbeat[]) {
     const heartbeats = partialHeartbeats.map((partialHeartbeat) => {
       return {
+        lines: 1,
+
         ...partialHeartbeat,
         editor: "Figma",
         machine: `${getBrowser()} on ${getOS()}`,
         operating_system: getOS(),
         user_agent: USER_AGENT,
 
-        lines: 1,
         line_additions: 0,
         line_deletions: 0,
         lineno: 1,

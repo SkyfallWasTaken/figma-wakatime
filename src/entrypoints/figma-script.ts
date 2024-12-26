@@ -53,10 +53,11 @@ export default defineUnlistedScript(async () => {
 
     if (shouldSendHeartbeat()) {
       log.debug("Sending heartbeat...");
-      log.debug(figma.root);
+      const entity = getEntity();
       await m2iMessenger.sendMessage("emitHeartbeat", {
         project: figma.root.name,
-        entity: getEntityName(),
+        entity: entity.name,
+        lines: "children" in entity ? entity.children.length : 0,
         time: Math.floor(Date.now() / 1000),
         type: "file",
         language: "Figma",
@@ -77,12 +78,12 @@ export default defineUnlistedScript(async () => {
   await figma.notify("WakaTime for Figma is running!");
 });
 
-function getEntityName(): string {
+function getEntity() {
   const currentSelection = figma.currentPage.selection;
   if (currentSelection && currentSelection.length > 0) {
-    return currentSelection[0].name;
+    return currentSelection[0];
   }
-  return figma.root.name;
+  return figma.root;
 }
 
 function shouldSendHeartbeat(): boolean {
