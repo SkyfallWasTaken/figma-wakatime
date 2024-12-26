@@ -8,13 +8,13 @@
   import Check from "lucide-svelte/icons/check";
   import X from "lucide-svelte/icons/x";
 
-  type CheckStatus = {
+  type TestStatus = {
     passed: boolean | null;
     error?: string;
   };
 
-  let wakaStatus: CheckStatus = $state({ passed: null });
-  let figmaStatus: CheckStatus = $state({ passed: null });
+  let wakaStatus: TestStatus = $state({ passed: null });
+  let figmaStatus: TestStatus = $state({ passed: null });
   let testing = $state(false);
 
   async function testWakaConnection(apiKey: string, apiUrl: string) {
@@ -86,14 +86,14 @@
     });
   });
 
-  const checks = $derived.by(() => {
+  const tests = $derived.by(() => {
     return [
       { label: "Sent WakaTime heartbeat", passed: wakaStatus.passed },
       { label: "Connected to Figma", passed: figmaStatus.passed },
     ];
   });
   const allPassed = $derived.by(() => {
-    return checks.every((check) => check.passed);
+    return tests.every((test) => test.passed);
   });
   const allRan = $derived.by(() => {
     return wakaStatus.passed !== null && figmaStatus.passed !== null;
@@ -133,7 +133,7 @@
         </p>
 
         <ul class="*:text-base">
-          {#each checks as { label, passed }}
+          {#each tests as { label, passed }}
             <li class="flex items-center">
               {#if passed}
                 <Check class="w-5 h-5 mr-1" />
