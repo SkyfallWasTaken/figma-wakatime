@@ -30,6 +30,7 @@ export default defineUnlistedScript(async () => {
   log.debug("Figma object loaded");
 
   let docHash: string | null = null;
+  let isWrite = false;
   const interval = setIntervalAsync(async () => {
     if (!figma) return; // Might be removed on page navigation
     const root = await figma.getNodeByIdAsync(figma.root.id);
@@ -44,6 +45,7 @@ export default defineUnlistedScript(async () => {
         log.debug("Document changed!");
         lastDocUpdateTs = Date.now();
         docHash = newDocHash;
+        isWrite = true;
       }
     } catch (e) {
       log.error("Failed to get document hash", e);
@@ -59,7 +61,9 @@ export default defineUnlistedScript(async () => {
         type: "file",
         language: "Figma",
         category: "designing",
+        is_write: isWrite,
       });
+      isWrite = false;
     }
   }, 12000);
   log.info(`Listening for changes to document \`${figma.root.name}\``);

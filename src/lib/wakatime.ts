@@ -36,6 +36,7 @@ export interface PartialHeartbeat {
   time: number;
   project: string;
   language: string;
+  is_write: boolean;
 }
 
 export default class WakaTime {
@@ -56,7 +57,6 @@ export default class WakaTime {
     const heartbeats = partialHeartbeats.map((partialHeartbeat) => {
       return {
         ...partialHeartbeat,
-        is_write: true,
         editor: "Figma",
         machine: `${getBrowser()} on ${getOS()}`,
         operating_system: getOS(),
@@ -114,9 +114,12 @@ export default class WakaTime {
         log.debug(`${this.queue.length} heartbeats in queue.`);
 
         try {
-          await this.trySendHeartbeats(this.queue);
-          log.debug("Flushed heartbeats.");
-          this.queue = [];
+          // WakaTime has a limit of 25 heartbeats per request
+          const heartbeatsToSend = this.queue.slice(0, 25);
+          await this.trySendHeartbeats(heartbeatsToSend);
+          log.debug(`Flushed ${heartbeatsToSend.length} heartbeats.`);
+          this.queue = this.queue.slice(heartbeatsToSend.length);
+
           // Reset backoff on success
           this.currentInterval = this.baseInterval;
           this.retryCount = 0;
@@ -128,13 +131,12 @@ export default class WakaTime {
             this.baseInterval * Math.pow(2, this.retryCount),
             this.maxInterval
           );
-          log.debug(`Retrying in ${this.currentInterval / 1000} seconds`);
         }
 
         scheduleNextFlush(this.currentInterval);
       }, delay);
     };
 
-    scheduleNextFlush(this.baseInterval);
+    scheduleNextFlush(this.currentInterval);
   }
 }

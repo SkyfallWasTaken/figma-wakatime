@@ -28,6 +28,7 @@
         project: "welcome",
         language: "text",
         category: "designing" as const,
+        is_write: false,
       };
 
       await wakatime.trySendHeartbeats([testHeartbeat]);
