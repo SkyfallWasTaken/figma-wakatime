@@ -2,7 +2,7 @@
   "name": "figma-wakatime",
   "description": "Metrics, insights, and time tracking automatically generated from your Figma activity.",
   "private": true,
-  "version": "1.2.4",
+  "version": "1.2.5",
   "type": "module",
   "scripts": {
     "dev": "wxt",
