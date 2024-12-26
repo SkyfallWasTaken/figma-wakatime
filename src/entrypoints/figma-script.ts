@@ -18,7 +18,7 @@ export default defineUnlistedScript(async () => {
   try {
     await pWaitFor(
       () => window.figma !== undefined && typeof window.figma === "object",
-      { interval: 5000, timeout: 12000 }
+      { interval: 5000, timeout: 15500 }
     );
   } catch (e) {
     alert(
