@@ -42,6 +42,7 @@ export default defineUnlistedScript(async () => {
       title: "WakaTime for Figma",
     })
   }
+  log.debug("Keys loaded");
 
   let docHash: string | null = null;
   let isWrite = false;

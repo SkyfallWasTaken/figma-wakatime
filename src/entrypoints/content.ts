@@ -15,7 +15,7 @@ export default defineContentScript({
     m2iMessenger.onMessage("getDocHash", async (message) => {
       return await i2bMessenger.sendMessage("getDocHash", message.data);
     });
-    m2iMessenger.onMessage("hasKeys", async (message) => {
+    m2iMessenger.onMessage("hasKeys", async () => {
       return await i2bMessenger.sendMessage("hasKeys", void 0);
     });
 
