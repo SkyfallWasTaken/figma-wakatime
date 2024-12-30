@@ -48,6 +48,10 @@ export default defineBackground(() => {
     return hash;
   });
 
+  i2bMessenger.onMessage("hasKeys", async () => {
+    return Boolean(get(wakaApiKey) && get(apiUrl) && get(figmaApiKey));
+  });
+
   wakatime.startFlushingHeartbeats();
 });
 

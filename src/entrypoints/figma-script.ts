@@ -2,6 +2,7 @@ import pWaitFor from "p-wait-for";
 import { log } from "@/lib/util";
 import { setIntervalAsync, clearIntervalAsync } from "set-interval-async";
 import { m2iMessenger } from "@/lib/messaging/m2i-messaging";
+import figmaPopupStyle from "@/lib/figma-popup-style";
 
 // People often ponder their designs or use sites like Dribbble for inspiration.
 // This can lead to long periods of inactivity and leave the user annoyed when
@@ -28,6 +29,15 @@ export default defineUnlistedScript(async () => {
     location.reload();
   }
   log.debug("Figma object loaded");
+
+  const hasKeys = await m2iMessenger.sendMessage("hasKeys", void 0);
+  if (!hasKeys) {
+    return await figma.showUI(`
+      ${figmaPopupStyle}
+      <h1>WakaTime for Figma</h1>
+      <p>WakaTime for Figma is not configured properly. Please visit the WakaTime for Figma configuration popup to configure your API keys and URL.</p>  
+    `)
+  }
 
   let docHash: string | null = null;
   let isWrite = false;

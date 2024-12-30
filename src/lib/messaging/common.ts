@@ -5,4 +5,5 @@ export default interface ProtocolMap {
   getDocHash(filekey: string): Promise<string>;
   uninject(data: unknown): void;
   error(data: ErrorEvent): void;
+  hasKeys(data: unknown): boolean;
 }

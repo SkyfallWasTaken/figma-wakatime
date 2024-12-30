@@ -15,6 +15,9 @@ export default defineContentScript({
     m2iMessenger.onMessage("getDocHash", async (message) => {
       return await i2bMessenger.sendMessage("getDocHash", message.data);
     });
+    m2iMessenger.onMessage("hasKeys", async (message) => {
+      return await i2bMessenger.sendMessage("hasKeys", void 0);
+    });
 
     let injected = false;
     ctx.addEventListener(window, 'wxt:locationchange', async ({ newUrl }) => {
