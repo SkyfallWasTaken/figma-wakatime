@@ -34,7 +34,7 @@ export default defineBackground(() => {
     });
     if (!response.ok) {
       console.log(await response.text());
-      throw new Error(`HTTP ${response.status} when getting file ${filekey}`);
+      throw new Error(`HTTP ${response.status} when getting file ${filekey} - is the Figma API key correct?`);
     }
     const responseText = await response.text();
     const hash = await sha256(responseText);
