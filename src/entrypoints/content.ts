@@ -7,6 +7,7 @@ export default defineContentScript({
   matches: ["*://*.figma.com/*"],
   async main(ctx) {
     log.info("Content script loaded");
+
     m2iMessenger.onMessage("emitHeartbeat", async (message) => {
       log.debug("I have a heartbeat! Yay!");
       return await i2bMessenger.sendMessage("emitHeartbeat", message.data);
@@ -28,6 +29,9 @@ export default defineContentScript({
         await m2iMessenger.sendMessage("uninject", void 0);
         injected = false;
       }
+    });
+    ctx.addEventListener(window, 'error', async (event) => {
+      return await i2bMessenger.sendMessage("error", event);
     });
   },
 });

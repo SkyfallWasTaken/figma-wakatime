@@ -6,6 +6,10 @@ import { get } from "svelte/store";
 
 export default defineBackground(() => {
   log.info("Background script loaded");
+
+  globalThis.addEventListener("error", onError);
+  i2bMessenger.onMessage("error", async (message) => onError(message.data));
+
   const wakatime = new WakaTime(get(wakaApiKey)!, get(apiUrl)!);
   wakaApiKey.subscribe((value) => {
     if (value) {
@@ -41,5 +45,10 @@ export default defineBackground(() => {
   wakatime.startFlushingHeartbeats();
 });
 
-/* export default defineBackground(() => {
- */
+export function onError(error: ErrorEvent) {
+  const errorMsg = `${error.type}: ${error.message} (at ${error.filename}:${error.lineno}:${error.colno})`;
+  chrome.tabs.create({
+    url: chrome.runtime.getURL(`error.html?error=${encodeURIComponent(errorMsg)}`),
+    active: true
+  });
+}

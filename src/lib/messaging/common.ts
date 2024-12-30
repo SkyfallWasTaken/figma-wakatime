@@ -4,4 +4,5 @@ export default interface ProtocolMap {
   emitHeartbeat(partialHeartbeat: PartialHeartbeat): void;
   getDocHash(filekey: string): Promise<string>;
   uninject(data: unknown): void;
+  error(data: ErrorEvent): void;
 }

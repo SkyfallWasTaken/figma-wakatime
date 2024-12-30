@@ -27,3 +27,7 @@ export async function base64Encode(str: string) {
   );
   return base64;
 }
+
+export function bugReportUrl(logs: string) {
+  return `https://github.com/SkyfallWasTaken/figma-wakatime/issues/new?labels=bug&projects=&template=bugs.yml&title=%F0%9F%90%9B+[BUG]+-+%3Ctitle%3E&logs=${encodeURIComponent(logs)}`
+}

@@ -45,11 +45,14 @@
   "dependencies": {
     "@webext-core/messaging": "^2.1.0",
     "common-tags": "^1.8.2",
-    "lucide-svelte": "^0.468.0",
+    "lucide-svelte": "^0.469.0",
     "p-wait-for": "^5.0.2",
     "set-interval-async": "^3.0.3"
   },
   "trustedDependencies": [
+    "dtrace-provider",
+    "esbuild",
+    "sharp",
     "spawn-sync"
   ]
 }
