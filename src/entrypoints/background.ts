@@ -34,7 +34,13 @@ export default defineBackground(() => {
     });
     if (!response.ok) {
       console.log(await response.text());
-      throw new Error(`HTTP ${response.status} when getting file ${filekey} - is the Figma API key correct?`);
+
+      // FIXME: This is bad. I know it is bad. Sorry. If it's not fixed by the 3rd of January, 2025, please let me know.
+      const message = `HTTP ${response.status} when getting file ${filekey} - is the Figma API key correct?`
+      onError(new ErrorEvent("error", {
+        message,
+      }));
+      throw new Error(message);
     }
     const responseText = await response.text();
     const hash = await sha256(responseText);
