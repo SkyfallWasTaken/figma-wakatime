@@ -36,7 +36,11 @@ export default defineUnlistedScript(async () => {
       ${figmaPopupStyle}
       <h1>WakaTime for Figma</h1>
       <p>WakaTime for Figma is not configured properly. Please visit the WakaTime for Figma configuration popup to configure your API keys and URL.</p>  
-    `)
+    `, {
+      width: 400,
+      height: 220,
+      title: "WakaTime for Figma",
+    })
   }
 
   let docHash: string | null = null;
