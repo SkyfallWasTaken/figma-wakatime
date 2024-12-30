@@ -40,7 +40,7 @@
     "tslib": "^2.8.1",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.1",
-    "wxt": "^0.19.22"
+    "wxt": "https://pkg.pr.new/wxt@1085"
   },
   "dependencies": {
     "@webext-core/messaging": "^2.1.0",
@@ -50,6 +50,9 @@
     "set-interval-async": "^3.0.3"
   },
   "trustedDependencies": [
+    "dtrace-provider",
+    "esbuild",
+    "sharp",
     "spawn-sync"
   ]
 }
